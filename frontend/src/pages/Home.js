@@ -120,7 +120,7 @@ const Home = () => {
 
   const fetchGalleryImages = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/gallery`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://tourism-app1-production.up.railway.app/api'}/gallery`);
       const data = await response.json();
       if (data.success && data.data.length > 0) {
         setGalleryImages(data.data);
