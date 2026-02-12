@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
@@ -31,10 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 // Static files for uploads
 app.use('/uploads', express.static('uploads'));
 
-// Serve React build in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
-}
+// Serve React build
+app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -51,12 +50,15 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/settings', settingsRoutes);
 
-// Serve React app for all other routes (production) - MUST BE LAST
-if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-  });
-}
+// Serve React app for all other routes - MUST BE LAST
+app.get('*', (req, res) => {
+  const indexPath = path.join(__dirname, '../frontend/build/index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).json({ success: false, message: 'Frontend not built. Access API at /api/*' });
+  }
+});
 
 // Error handling
 app.use((err, req, res, next) => {
