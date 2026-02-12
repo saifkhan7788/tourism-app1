@@ -12,14 +12,20 @@ async function init() {
     database: process.env.DB_NAME,
     port: process.env.DB_PORT,
     ssl: { rejectUnauthorized: false },
-    multipleStatements: true
+    multipleStatements: true,
+    connectTimeout: 60000,
+    acquireTimeout: 60000
   });
 
   const schema = fs.readFileSync("./schema.sql", "utf8");
   const statements = schema.split(';').filter(s => s.trim());
 
-  for (const statement of statements) {
+  console.log(`Executing ${statements.length} SQL statements...`);
+
+  for (let i = 0; i < statements.length; i++) {
+    const statement = statements[i];
     if (statement.trim()) {
+      console.log(`Executing statement ${i + 1}/${statements.length}...`);
       await connection.query(statement);
     }
   }

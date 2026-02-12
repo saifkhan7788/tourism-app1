@@ -19,5 +19,5 @@ COPY --from=frontend-build /app/frontend/build /app/frontend/build
 # Expose Railway dynamic port
 EXPOSE 8080
 
-# Start backend (schema already initialized manually)
-CMD ["node", "server.js"]
+# Start backend (run init-db first, then server)
+CMD node init-db.js && node server.js
