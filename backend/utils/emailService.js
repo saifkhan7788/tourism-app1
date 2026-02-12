@@ -1,14 +1,30 @@
 import nodemailer from 'nodemailer';
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
-});
+// Alternative: Use Railway's recommended email service or disable emails in production
+const transporter = process.env.NODE_ENV === 'production' 
+  ? null // Disable emails in production if SMTP fails
+  : nodemailer.createTransporter({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD
+      },
+      tls: {
+        rejectUnauthorized: false
+      },
+      connectionTimeout: 60000,
+      greetingTimeout: 30000,
+      socketTimeout: 60000
+    });
 
 const sendBookingConfirmation = async (bookingDetails) => {
+  if (!transporter) {
+    console.log('Email disabled in production');
+    return;
+  }
+  
   const { customer_name, customer_email, tour_title, booking_date, number_of_people, total_price } = bookingDetails;
 
   const mailOptions = {
@@ -42,6 +58,11 @@ const sendBookingConfirmation = async (bookingDetails) => {
 };
 
 const sendAdminNotification = async (bookingDetails) => {
+  if (!transporter) {
+    console.log('Email disabled in production');
+    return;
+  }
+  
   const { customer_name, customer_email, customer_phone, tour_title, booking_date, number_of_people, total_price, special_requests } = bookingDetails;
 
   console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
