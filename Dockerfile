@@ -13,10 +13,10 @@ COPY backend/package*.json ./
 RUN npm install --production
 COPY backend/ ./
 
-# Copy frontend build from stage 1
+# Copy frontend build to backend
 COPY --from=frontend-build /app/frontend/build ./frontend/build
 
-# Expose dynamic port
+# Expose Railway dynamic port
 EXPOSE 3000
 
 # Start backend
