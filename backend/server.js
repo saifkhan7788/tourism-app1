@@ -37,7 +37,7 @@ app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ success: true, message: 'Server is running' });
+  res.json({ success: true, message: 'Server is running', dirname: __dirname });
 });
 
 // Routes

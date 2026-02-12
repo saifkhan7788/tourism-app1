@@ -8,13 +8,13 @@ RUN npm run build
 
 # Stage 2: Build backend
 FROM node:18-alpine
-WORKDIR /app
+WORKDIR /app/backend
 COPY backend/package*.json ./
 RUN npm install --production
 COPY backend/ ./
 
 # Copy frontend build to backend
-COPY --from=frontend-build /app/frontend/build ./frontend/build
+COPY --from=frontend-build /app/frontend/build /app/frontend/build
 
 # Expose Railway dynamic port
 EXPOSE 8080
