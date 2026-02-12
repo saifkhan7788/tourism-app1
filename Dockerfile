@@ -1,6 +1,5 @@
 # Stage 1: Build frontend
 FROM node:18-alpine AS frontend-build
-
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm install
@@ -9,17 +8,15 @@ RUN npm run build
 
 # Stage 2: Build backend
 FROM node:18-alpine
-
 WORKDIR /app
 COPY backend/package*.json ./
 RUN npm install --production
 COPY backend/ ./
 
-# Copy frontend build to backend
+# Copy frontend build from stage 1
 COPY --from=frontend-build /app/frontend/build ./frontend/build
 
-# Railway exposes the PORT automatically
-ENV PORT 3000
+# Expose dynamic port
 EXPOSE 3000
 
 # Start backend
