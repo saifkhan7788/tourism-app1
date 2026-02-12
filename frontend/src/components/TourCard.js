@@ -28,7 +28,7 @@ const TourCard = ({ tour }) => {
   };
 
   const imageUrl = tour.image_url 
-    ? `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:3001'}${tour.image_url}` 
+    ? `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://tourism-app1-production.up.railway.app'}${tour.image_url}` 
     : getDefaultImage(tour.title);
 
   return (
