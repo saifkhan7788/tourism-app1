@@ -66,6 +66,27 @@ const TourDetail = () => {
     }
   };
 
+  // Default images based on tour title/category
+  const getDefaultImage = (title) => {
+    const titleLower = title.toLowerCase();
+    if (titleLower.includes('desert') || titleLower.includes('safari')) {
+      return 'https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=800&h=600&fit=crop';
+    }
+    if (titleLower.includes('jet ski') || titleLower.includes('water')) {
+      return 'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=800&h=600&fit=crop';
+    }
+    if (titleLower.includes('city') || titleLower.includes('doha')) {
+      return 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&h=600&fit=crop';
+    }
+    if (titleLower.includes('dhow') || titleLower.includes('cruise')) {
+      return 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop';
+    }
+    if (titleLower.includes('north') || titleLower.includes('zubarah')) {
+      return 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop';
+    }
+    return 'https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=800&h=600&fit=crop';
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
@@ -102,7 +123,7 @@ const TourDetail = () => {
         <Grid item xs={12} md={8}>
           <Box
             component="img"
-            src={tour.image_url ? `http://localhost:3001${tour.image_url}` : 'https://via.placeholder.com/800x400?text=Tour+Image'}
+            src={tour.image_url ? `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:3001'}${tour.image_url}` : getDefaultImage(tour.title)}
             alt={tour.title}
             sx={{ width: '100%', height: 400, objectFit: 'cover', borderRadius: 2, mb: 3 }}
           />

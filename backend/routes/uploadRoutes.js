@@ -1,8 +1,15 @@
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
+import fs from 'fs';
 
 const router = express.Router();
+
+// Ensure uploads directory exists
+const uploadsDir = 'uploads';
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 // Configure multer storage
 const storage = multer.diskStorage({
@@ -39,8 +46,9 @@ router.post('/image', upload.single('image'), (req, res) => {
     }
     
     const imageUrl = `/uploads/${req.file.filename}`;
-    res.json({ success: true, imageUrl });
+    res.json({ success: true, imageUrl, message: 'Image uploaded successfully' });
   } catch (error) {
+    console.error('Upload error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

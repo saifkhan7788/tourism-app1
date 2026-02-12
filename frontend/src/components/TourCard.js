@@ -6,12 +6,37 @@ import { useNavigate } from 'react-router-dom';
 const TourCard = ({ tour }) => {
   const navigate = useNavigate();
 
+  // Default images based on tour title/category
+  const getDefaultImage = (title) => {
+    const titleLower = title.toLowerCase();
+    if (titleLower.includes('desert') || titleLower.includes('safari')) {
+      return 'https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=800&h=600&fit=crop';
+    }
+    if (titleLower.includes('jet ski') || titleLower.includes('water')) {
+      return 'https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?w=800&h=600&fit=crop';
+    }
+    if (titleLower.includes('city') || titleLower.includes('doha')) {
+      return 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&h=600&fit=crop';
+    }
+    if (titleLower.includes('dhow') || titleLower.includes('cruise')) {
+      return 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&h=600&fit=crop';
+    }
+    if (titleLower.includes('north') || titleLower.includes('zubarah')) {
+      return 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&h=600&fit=crop';
+    }
+    return 'https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=800&h=600&fit=crop';
+  };
+
+  const imageUrl = tour.image_url 
+    ? `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:3001'}${tour.image_url}` 
+    : getDefaultImage(tour.title);
+
   return (
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardMedia
         component="img"
         height="240"
-        image={tour.image_url ? `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://tourism-app1-production.up.railway.app'}${tour.image_url}` : 'https://via.placeholder.com/400x240?text=Tour+Image'}
+        image={imageUrl}
         alt={tour.title}
         sx={{ objectFit: 'cover' }}
       />

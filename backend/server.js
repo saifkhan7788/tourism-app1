@@ -4,6 +4,7 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import './utils/ensureUploads.js';
 
 import tourRoutes from './routes/tourRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
