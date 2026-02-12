@@ -13,7 +13,7 @@ const SettingsManagement = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/settings`);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'https://tourism-app1-production.up.railway.app/api'}/settings`);
       setSettings(response.data.data);
     } catch (error) {
       console.error('Error:', error);
@@ -24,7 +24,7 @@ const SettingsManagement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/settings`, settings, {
+      await axios.put(`${process.env.REACT_APP_API_URL || 'https://tourism-app1-production.up.railway.app/api'}/settings`, settings, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Settings saved successfully!');

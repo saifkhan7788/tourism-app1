@@ -11,7 +11,7 @@ const TourCard = ({ tour }) => {
       <CardMedia
         component="img"
         height="240"
-        image={tour.image_url ? `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:3001'}${tour.image_url}` : 'https://via.placeholder.com/400x240?text=Tour+Image'}
+        image={tour.image_url ? `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://tourism-app1-production.up.railway.app'}${tour.image_url}` : 'https://via.placeholder.com/400x240?text=Tour+Image'}
         alt={tour.title}
         sx={{ objectFit: 'cover' }}
       />

@@ -104,7 +104,7 @@ const TourManagement = () => {
 
     setUploading(true);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/upload/image`, formData, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL || 'https://tourism-app1-production.up.railway.app/api'}/upload/image`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setCurrentTour({ ...currentTour, image_url: response.data.imageUrl });
@@ -250,7 +250,7 @@ const TourManagement = () => {
             </Button>
             {currentTour.image_url && (
               <Box sx={{ mt: 1 }}>
-                <img src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:3001'}${currentTour.image_url}`} alt="Preview" style={{ maxWidth: '200px', borderRadius: '8px' }} />
+                <img src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://tourism-app1-production.up.railway.app'}${currentTour.image_url}`} alt="Preview" style={{ maxWidth: '200px', borderRadius: '8px' }} />
               </Box>
             )}
           </Box>

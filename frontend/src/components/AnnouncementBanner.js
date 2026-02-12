@@ -21,7 +21,7 @@ const AnnouncementBanner = () => {
 
   const fetchAnnouncements = async () => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/announcements/active`);
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://tourism-app1-production.up.railway.app/api'}/announcements/active`);
       const data = await response.json();
       if (data.success && data.data && data.data.length > 0) {
         setAnnouncements(data.data);
