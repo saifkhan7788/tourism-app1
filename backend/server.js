@@ -36,6 +36,11 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')));
 }
 
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, message: 'Server is running' });
+});
+
 // Routes
 app.use('/api/tours', tourRoutes);
 app.use('/api/bookings', bookingRoutes);
@@ -46,17 +51,12 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/settings', settingsRoutes);
 
-// Serve React app for all other routes (production)
+// Serve React app for all other routes (production) - MUST BE LAST
 if (process.env.NODE_ENV === 'production') {
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
   });
 }
-
-// Health check
-app.get('/api/health', (req, res) => {
-  res.json({ success: true, message: 'Server is running' });
-});
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -64,7 +64,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ success: false, message: 'Something went wrong!' });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
