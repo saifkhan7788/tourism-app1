@@ -1,5 +1,5 @@
-const db = require('../config/database');
-const bcrypt = require('bcryptjs');
+import db from '../config/database.js';
+import bcrypt from 'bcryptjs';
 
 class User {
   static async create(userData) {
@@ -52,4 +52,4 @@ class User {
   }
 }
 
-module.exports = User;
+export default User;

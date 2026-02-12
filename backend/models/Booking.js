@@ -1,4 +1,4 @@
-const db = require('../config/database');
+import db from '../config/database.js';
 
 class Booking {
   static async create(bookingData) {
@@ -82,4 +82,4 @@ class Booking {
   }
 }
 
-module.exports = Booking;
+export default Booking;

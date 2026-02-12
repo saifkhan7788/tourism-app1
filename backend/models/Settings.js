@@ -1,4 +1,4 @@
-const db = require('../config/database');
+import db from '../config/database.js';
 
 class Settings {
   static async getAll() {
@@ -18,4 +18,4 @@ class Settings {
   }
 }
 
-module.exports = Settings;
+export default Settings;

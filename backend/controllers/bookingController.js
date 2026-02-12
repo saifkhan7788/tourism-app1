@@ -1,8 +1,8 @@
-const Booking = require('../models/Booking');
-const Tour = require('../models/Tour');
-const { sendBookingConfirmation, sendAdminNotification, sendStatusUpdateEmail } = require('../utils/emailService');
+import Booking from '../models/Booking.js';
+import Tour from '../models/Tour.js';
+import { sendBookingConfirmation, sendAdminNotification, sendStatusUpdateEmail } from '../utils/emailService.js';
 
-exports.createBooking = async (req, res) => {
+const createBooking = async (req, res) => {
   try {
     const bookingId = await Booking.create(req.body);
     
@@ -40,7 +40,7 @@ exports.createBooking = async (req, res) => {
   }
 };
 
-exports.getAllBookings = async (req, res) => {
+const getAllBookings = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -53,7 +53,7 @@ exports.getAllBookings = async (req, res) => {
   }
 };
 
-exports.getBookingById = async (req, res) => {
+const getBookingById = async (req, res) => {
   try {
     const booking = await Booking.getById(req.params.id);
     if (!booking) {
@@ -65,7 +65,7 @@ exports.getBookingById = async (req, res) => {
   }
 };
 
-exports.updateBookingStatus = async (req, res) => {
+const updateBookingStatus = async (req, res) => {
   try {
     const { status, remarks } = req.body;
     const affectedRows = await Booking.updateStatus(req.params.id, status);
@@ -97,7 +97,7 @@ exports.updateBookingStatus = async (req, res) => {
   }
 };
 
-exports.getBookingsByEmail = async (req, res) => {
+const getBookingsByEmail = async (req, res) => {
   try {
     const bookings = await Booking.getByEmail(req.params.email);
     res.json({ success: true, data: bookings });
@@ -106,7 +106,7 @@ exports.getBookingsByEmail = async (req, res) => {
   }
 };
 
-exports.deleteBooking = async (req, res) => {
+const deleteBooking = async (req, res) => {
   try {
     const affectedRows = await Booking.delete(req.params.id);
     if (affectedRows === 0) {
@@ -117,3 +117,6 @@ exports.deleteBooking = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+
+export default { createBooking, getAllBookings, getBookingById, updateBookingStatus, getBookingsByEmail, deleteBooking };

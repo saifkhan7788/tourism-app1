@@ -1,6 +1,6 @@
-const Tour = require('../models/Tour');
+import Tour from '../models/Tour.js';
 
-exports.getAllTours = async (req, res) => {
+const getAllTours = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -13,7 +13,7 @@ exports.getAllTours = async (req, res) => {
   }
 };
 
-exports.getTourById = async (req, res) => {
+const getTourById = async (req, res) => {
   try {
     const tour = await Tour.getById(req.params.id);
     if (!tour) {
@@ -25,7 +25,7 @@ exports.getTourById = async (req, res) => {
   }
 };
 
-exports.createTour = async (req, res) => {
+const createTour = async (req, res) => {
   try {
     const tourId = await Tour.create(req.body);
     res.status(201).json({ success: true, message: 'Tour created successfully', tourId });
@@ -34,7 +34,7 @@ exports.createTour = async (req, res) => {
   }
 };
 
-exports.updateTour = async (req, res) => {
+const updateTour = async (req, res) => {
   try {
     const affectedRows = await Tour.update(req.params.id, req.body);
     if (affectedRows === 0) {
@@ -46,7 +46,7 @@ exports.updateTour = async (req, res) => {
   }
 };
 
-exports.deleteTour = async (req, res) => {
+const deleteTour = async (req, res) => {
   try {
     const affectedRows = await Tour.delete(req.params.id);
     if (affectedRows === 0) {
@@ -58,7 +58,7 @@ exports.deleteTour = async (req, res) => {
   }
 };
 
-exports.searchTours = async (req, res) => {
+const searchTours = async (req, res) => {
   try {
     const { keyword } = req.query;
     const tours = await Tour.search(keyword);
@@ -67,3 +67,5 @@ exports.searchTours = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+export default { getAllTours, getTourById, createTour, updateTour, deleteTour, searchTours };

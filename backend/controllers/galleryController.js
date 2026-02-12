@@ -1,6 +1,6 @@
-const Gallery = require('../models/Gallery');
+import Gallery from '../models/Gallery.js';
 
-exports.createGallery = async (req, res) => {
+const createGallery = async (req, res) => {
   try {
     const galleryId = await Gallery.create(req.body);
     res.status(201).json({ success: true, message: 'Gallery image added successfully', galleryId });
@@ -9,7 +9,7 @@ exports.createGallery = async (req, res) => {
   }
 };
 
-exports.getAllGallery = async (req, res) => {
+const getAllGallery = async (req, res) => {
   try {
     const images = await Gallery.getAll();
     res.json({ success: true, data: images });
@@ -18,7 +18,7 @@ exports.getAllGallery = async (req, res) => {
   }
 };
 
-exports.updateGallery = async (req, res) => {
+const updateGallery = async (req, res) => {
   try {
     const affectedRows = await Gallery.update(req.params.id, req.body);
     if (affectedRows === 0) {
@@ -30,7 +30,7 @@ exports.updateGallery = async (req, res) => {
   }
 };
 
-exports.deleteGallery = async (req, res) => {
+const deleteGallery = async (req, res) => {
   try {
     const affectedRows = await Gallery.delete(req.params.id);
     if (affectedRows === 0) {
@@ -41,3 +41,6 @@ exports.deleteGallery = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+
+export default { createGallery, getAllGallery, updateGallery, deleteGallery };

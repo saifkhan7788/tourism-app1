@@ -1,4 +1,4 @@
-const db = require('../config/database');
+import db from '../config/database.js';
 
 class Announcement {
   static async create(data) {
@@ -37,4 +37,4 @@ class Announcement {
   }
 }
 
-module.exports = Announcement;
+export default Announcement;

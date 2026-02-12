@@ -1,7 +1,7 @@
-const User = require('../models/User');
-const jwt = require('jsonwebtoken');
+import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
 
-exports.register = async (req, res) => {
+const register = async (req, res) => {
   try {
     const { username, email, password, role } = req.body;
     
@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -48,7 +48,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.getProfile = async (req, res) => {
+const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     res.json({ success: true, data: user });
@@ -57,7 +57,7 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-exports.getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
   try {
     const users = await User.getAll();
     res.json({ success: true, data: users });
@@ -66,7 +66,7 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-exports.deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
   try {
     const affectedRows = await User.delete(req.params.id);
     if (affectedRows === 0) {
@@ -78,7 +78,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-exports.updatePassword = async (req, res) => {
+const updatePassword = async (req, res) => {
   try {
     const { newPassword } = req.body;
     const affectedRows = await User.updatePassword(req.params.id, newPassword);
@@ -91,7 +91,7 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {
+const updateUser = async (req, res) => {
   try {
     const { username, email, role } = req.body;
     const affectedRows = await User.update(req.params.id, { username, email, role });
@@ -103,3 +103,5 @@ exports.updateUser = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+export default { register, login, getProfile, getAllUsers, deleteUser, updatePassword, updateUser };

@@ -1,4 +1,4 @@
-const db = require('../config/database');
+import db from '../config/database.js';
 
 class Contact {
   static async create(contactData) {
@@ -39,4 +39,4 @@ class Contact {
   }
 }
 
-module.exports = Contact;
+export default Contact;

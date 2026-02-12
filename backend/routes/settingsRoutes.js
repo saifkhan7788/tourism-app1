@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
+import settingsController from '../controllers/settingsController.js';
+import auth from '../middleware/auth.js';
+import checkRole from '../middleware/checkRole.js';
+
 const router = express.Router();
-const settingsController = require('../controllers/settingsController');
-const auth = require('../middleware/auth');
-const checkRole = require('../middleware/checkRole');
 
 router.get('/', settingsController.getSettings);
 router.put('/', auth, checkRole('admin'), settingsController.updateSettings);
 
-module.exports = router;
+export default router;

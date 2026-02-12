@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import bookingController from '../controllers/bookingController.js';
+import authMiddleware from '../middleware/auth.js';
+import checkRole from '../middleware/checkRole.js';
+
 const router = express.Router();
-const bookingController = require('../controllers/bookingController');
-const authMiddleware = require('../middleware/auth');
-const checkRole = require('../middleware/checkRole');
 
 // Public routes
 router.post('/', bookingController.createBooking);
@@ -16,4 +17,4 @@ router.patch('/:id/status', authMiddleware, checkRole('admin', 'manager'), booki
 // Admin only
 router.delete('/:id', authMiddleware, checkRole('admin'), bookingController.deleteBooking);
 
-module.exports = router;
+export default router;

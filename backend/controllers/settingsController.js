@@ -1,6 +1,6 @@
-const Settings = require('../models/Settings');
+import Settings from '../models/Settings.js';
 
-exports.getSettings = async (req, res) => {
+const getSettings = async (req, res) => {
   try {
     const settings = await Settings.getAll();
     res.json({ success: true, data: settings });
@@ -9,7 +9,7 @@ exports.getSettings = async (req, res) => {
   }
 };
 
-exports.updateSettings = async (req, res) => {
+const updateSettings = async (req, res) => {
   try {
     const updates = req.body;
     for (const [key, value] of Object.entries(updates)) {
@@ -20,3 +20,6 @@ exports.updateSettings = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+
+export default { getSettings, updateSettings };

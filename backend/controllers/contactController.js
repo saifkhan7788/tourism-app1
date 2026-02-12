@@ -1,6 +1,6 @@
-const Contact = require('../models/Contact');
+import Contact from '../models/Contact.js';
 
-exports.createContact = async (req, res) => {
+const createContact = async (req, res) => {
   try {
     const contactId = await Contact.create(req.body);
     res.status(201).json({ success: true, message: 'Message sent successfully', contactId });
@@ -9,7 +9,7 @@ exports.createContact = async (req, res) => {
   }
 };
 
-exports.getAllContacts = async (req, res) => {
+const getAllContacts = async (req, res) => {
   try {
     const contacts = await Contact.getAll();
     res.json({ success: true, data: contacts });
@@ -18,7 +18,7 @@ exports.getAllContacts = async (req, res) => {
   }
 };
 
-exports.updateStatus = async (req, res) => {
+const updateStatus = async (req, res) => {
   try {
     const { status } = req.body;
     const affectedRows = await Contact.updateStatus(req.params.id, status);
@@ -31,7 +31,7 @@ exports.updateStatus = async (req, res) => {
   }
 };
 
-exports.deleteContact = async (req, res) => {
+const deleteContact = async (req, res) => {
   try {
     const affectedRows = await Contact.delete(req.params.id);
     if (affectedRows === 0) {
@@ -43,7 +43,7 @@ exports.deleteContact = async (req, res) => {
   }
 };
 
-exports.replyContact = async (req, res) => {
+const replyContact = async (req, res) => {
   try {
     const { replyMessage } = req.body;
     const contact = await Contact.getById(req.params.id);
@@ -56,7 +56,7 @@ exports.replyContact = async (req, res) => {
     
     // Send email (using existing email service if available)
     try {
-      const { sendContactReply } = require('../utils/emailService');
+      const { sendContactReply } = await import('../utils/emailService.js');
       await sendContactReply({
         to: contact.email,
         name: contact.name,
@@ -72,3 +72,6 @@ exports.replyContact = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+
+export default { createContact, getAllContacts, updateStatus, deleteContact, replyContact };

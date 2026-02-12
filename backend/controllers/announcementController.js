@@ -1,6 +1,6 @@
-const Announcement = require('../models/Announcement');
+import Announcement from '../models/Announcement.js';
 
-exports.createAnnouncement = async (req, res) => {
+const createAnnouncement = async (req, res) => {
   try {
     const id = await Announcement.create(req.body);
     res.status(201).json({ success: true, message: 'Announcement created successfully', id });
@@ -9,7 +9,7 @@ exports.createAnnouncement = async (req, res) => {
   }
 };
 
-exports.getActiveAnnouncement = async (req, res) => {
+const getActiveAnnouncement = async (req, res) => {
   try {
     const announcements = await Announcement.getActive();
     res.json({ success: true, data: announcements });
@@ -18,7 +18,7 @@ exports.getActiveAnnouncement = async (req, res) => {
   }
 };
 
-exports.getAllAnnouncements = async (req, res) => {
+const getAllAnnouncements = async (req, res) => {
   try {
     const announcements = await Announcement.getAll();
     res.json({ success: true, data: announcements });
@@ -27,7 +27,7 @@ exports.getAllAnnouncements = async (req, res) => {
   }
 };
 
-exports.updateAnnouncement = async (req, res) => {
+const updateAnnouncement = async (req, res) => {
   try {
     const affectedRows = await Announcement.update(req.params.id, req.body);
     if (affectedRows === 0) {
@@ -39,7 +39,7 @@ exports.updateAnnouncement = async (req, res) => {
   }
 };
 
-exports.deleteAnnouncement = async (req, res) => {
+const deleteAnnouncement = async (req, res) => {
   try {
     const affectedRows = await Announcement.delete(req.params.id);
     if (affectedRows === 0) {
@@ -50,3 +50,6 @@ exports.deleteAnnouncement = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+
+export default { createAnnouncement, getActiveAnnouncement, getAllAnnouncements, updateAnnouncement, deleteAnnouncement };

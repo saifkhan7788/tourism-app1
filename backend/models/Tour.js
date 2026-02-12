@@ -1,4 +1,4 @@
-const db = require('../config/database');
+import db from '../config/database.js';
 
 class Tour {
   static async getAll(page = 1, limit = 10, search = '') {
@@ -74,4 +74,4 @@ class Tour {
   }
 }
 
-module.exports = Tour;
+export default Tour;

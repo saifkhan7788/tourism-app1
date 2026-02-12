@@ -1,4 +1,4 @@
-const db = require('../config/database');
+import db from '../config/database.js';
 
 class Gallery {
   static async create(galleryData) {
@@ -30,4 +30,4 @@ class Gallery {
   }
 }
 
-module.exports = Gallery;
+export default Gallery;

@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import contactController from '../controllers/contactController.js';
+import authMiddleware from '../middleware/auth.js';
+import checkRole from '../middleware/checkRole.js';
+
 const router = express.Router();
-const contactController = require('../controllers/contactController');
-const authMiddleware = require('../middleware/auth');
-const checkRole = require('../middleware/checkRole');
 
 router.post('/', contactController.createContact);
 router.get('/', authMiddleware, checkRole('admin', 'manager'), contactController.getAllContacts);
@@ -10,4 +11,4 @@ router.patch('/:id/status', authMiddleware, checkRole('admin', 'manager'), conta
 router.post('/:id/reply', authMiddleware, checkRole('admin', 'manager'), contactController.replyContact);
 router.delete('/:id', authMiddleware, checkRole('admin'), contactController.deleteContact);
 
-module.exports = router;
+export default router;

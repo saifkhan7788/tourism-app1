@@ -1,16 +1,22 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 
-const tourRoutes = require('./routes/tourRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
-const authRoutes = require('./routes/authRoutes');
-const uploadRoutes = require('./routes/uploadRoutes');
-const contactRoutes = require('./routes/contactRoutes');
-const galleryRoutes = require('./routes/galleryRoutes');
-const announcementRoutes = require('./routes/announcementRoutes');
-const settingsRoutes = require('./routes/settingsRoutes');
+import tourRoutes from './routes/tourRoutes.js';
+import bookingRoutes from './routes/bookingRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
+import contactRoutes from './routes/contactRoutes.js';
+import galleryRoutes from './routes/galleryRoutes.js';
+import announcementRoutes from './routes/announcementRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config();
 
 const app = express();
 

@@ -1,4 +1,4 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -160,9 +160,4 @@ const sendContactReply = async ({ to, name, subject, replyMessage }) => {
   await transporter.sendMail(mailOptions);
 };
 
-module.exports = {
-  sendBookingConfirmation,
-  sendAdminNotification,
-  sendStatusUpdateEmail,
-  sendContactReply
-};
+export { sendBookingConfirmation, sendAdminNotification, sendStatusUpdateEmail, sendContactReply };
