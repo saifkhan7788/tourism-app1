@@ -52,7 +52,7 @@ const GalleryManagement = () => {
 
     setUploading(true);
     try {
-      const response = await axios.post('http://localhost:3001/api/upload/image', formDataUpload, {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/upload/image`, formDataUpload, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setFormData({ ...formData, image_url: response.data.imageUrl });
@@ -136,7 +136,7 @@ const GalleryManagement = () => {
             {filteredImages.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((image) => (
               <TableRow key={image.id}>
                 <TableCell>
-                  <img src={`http://localhost:3001${image.image_url}`} alt={image.title} style={{ width: 100, height: 60, objectFit: 'cover', borderRadius: 4 }} />
+                  <img src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:3001'}${image.image_url}`} alt={image.title} style={{ width: 100, height: 60, objectFit: 'cover', borderRadius: 4 }} />
                 </TableCell>
                 <TableCell>{image.title}</TableCell>
                 <TableCell>{image.description?.substring(0, 50)}...</TableCell>
@@ -175,7 +175,7 @@ const GalleryManagement = () => {
           </Button>
           {formData.image_url && (
             <Box sx={{ mb: 2 }}>
-              <img src={`http://localhost:3001${formData.image_url}`} alt="Preview" style={{ maxWidth: '100%', borderRadius: 8 }} />
+              <img src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:3001'}${formData.image_url}`} alt="Preview" style={{ maxWidth: '100%', borderRadius: 8 }} />
             </Box>
           )}
           <TextField fullWidth label="Image URL" value={formData.image_url} onChange={(e) => setFormData({ ...formData, image_url: e.target.value })} sx={{ mb: 2 }} />

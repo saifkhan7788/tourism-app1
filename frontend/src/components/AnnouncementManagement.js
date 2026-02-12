@@ -24,7 +24,7 @@ const AnnouncementManagement = () => {
   const fetchAnnouncements = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:3001/api/announcements', {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/announcements`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAnnouncements(response.data.data);
@@ -56,11 +56,11 @@ const AnnouncementManagement = () => {
     try {
       const token = localStorage.getItem('token');
       if (editMode) {
-        await axios.put(`http://localhost:3001/api/announcements/${formData.id}`, formData, {
+        await axios.put(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/announcements/${formData.id}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
-        await axios.post('http://localhost:3001/api/announcements', formData, {
+        await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/announcements`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
@@ -82,7 +82,7 @@ const AnnouncementManagement = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:3001/api/announcements/${selected.id}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/announcements/${selected.id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchAnnouncements();

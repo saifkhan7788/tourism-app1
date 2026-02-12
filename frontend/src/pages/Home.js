@@ -120,7 +120,7 @@ const Home = () => {
 
   const fetchGalleryImages = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/gallery');
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3001/api'}/gallery`);
       const data = await response.json();
       if (data.success && data.data.length > 0) {
         setGalleryImages(data.data);
@@ -142,7 +142,7 @@ const Home = () => {
               <Box
                 sx={{
                   height: { xs: '350px', sm: '400px', md: '450px' },
-                  backgroundImage: `linear-gradient(rgba(139, 21, 56, 0.6), rgba(93, 14, 37, 0.6)), url(${image.image_url ? `http://localhost:3001${image.image_url}` : image.url})`,
+                  backgroundImage: `linear-gradient(rgba(139, 21, 56, 0.6), rgba(93, 14, 37, 0.6)), url(${image.image_url ? `${process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:3001'}${image.image_url}` : image.url})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center center',
                   backgroundRepeat: 'no-repeat',
