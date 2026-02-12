@@ -44,9 +44,12 @@ const sendBookingConfirmation = async (bookingDetails) => {
 const sendAdminNotification = async (bookingDetails) => {
   const { customer_name, customer_email, customer_phone, tour_title, booking_date, number_of_people, total_price, special_requests } = bookingDetails;
 
+  console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL);
+  console.log('EMAIL_USER:', process.env.EMAIL_USER);
+
   const mailOptions = {
     from: process.env.EMAIL_USER,
-    to: process.env.ADMIN_EMAIL,
+    to: process.env.ADMIN_EMAIL || 'admin@arabianadventure.com',
     subject: 'New Booking - Arabian Adventure',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
