@@ -2,6 +2,7 @@
   "name": "arabian-adventure-backend",
   "version": "1.0.0",
   "description": "Arabian Adventure Backend API",
+  "type": "module",
   "main": "server.js",
   "bin": "server.js",
   "scripts": {
@@ -24,7 +25,7 @@
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.6.5",
+    "mysql2": "^3.17.0",
     "nodemailer": "^8.0.1"
   },
   "devDependencies": {
