@@ -1,6 +1,6 @@
--- Create Database
-CREATE DATABASE IF NOT EXISTS qatar_tourism;
-USE qatar_tourism;
+-- Use Railway database
+-- CREATE DATABASE IF NOT EXISTS qatar_tourism;
+-- USE qatar_tourism;
 
 -- Tours Table
 CREATE TABLE tours (
