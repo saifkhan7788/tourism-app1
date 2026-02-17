@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, TextField, Button, Typography, Grid } from '@mui/material';
+import { Box, TextField, Button, Typography, Grid, FormControlLabel, Switch } from '@mui/material';
 import { Save } from '@mui/icons-material';
 import axios from 'axios';
 
@@ -57,6 +57,30 @@ const SettingsManagement = () => {
         </Grid>
         <Grid item xs={12}>
           <TextField fullWidth label="Company Address" value={settings.company_address || ''} onChange={(e) => setSettings({ ...settings, company_address: e.target.value })} />
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h6" sx={{ mt: 2, mb: 1 }}>Auto-Approval Settings</Typography>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={settings.auto_approve_enabled === 'true'}
+                onChange={(e) => setSettings({ ...settings, auto_approve_enabled: e.target.checked ? 'true' : 'false' })}
+              />
+            }
+            label="Enable Auto-Approval"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            type="number"
+            label="Auto-Approve After (Minutes)"
+            value={settings.auto_approve_minutes || '2'}
+            onChange={(e) => setSettings({ ...settings, auto_approve_minutes: e.target.value })}
+            disabled={settings.auto_approve_enabled !== 'true'}
+          />
         </Grid>
         <Grid item xs={12}>
           <Button variant="contained" startIcon={<Save />} onClick={handleSave} disabled={loading}>
