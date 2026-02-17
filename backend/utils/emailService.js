@@ -1,9 +1,6 @@
-import nodemailer from 'nodemailer';
+import { createTransport } from 'nodemailer';
 
-// Alternative: Use Railway's recommended email service or disable emails in production
-const transporter = process.env.NODE_ENV === 'production' 
-  ? null // Disable emails in production if SMTP fails
-  : nodemailer.createTransporter({
+const transporter = createTransport({
       host: 'smtp.gmail.com',
       port: 587,
       secure: false,
@@ -14,16 +11,9 @@ const transporter = process.env.NODE_ENV === 'production'
       tls: {
         rejectUnauthorized: false
       },
-      connectionTimeout: 60000,
-      greetingTimeout: 30000,
-      socketTimeout: 60000
     });
 
 const sendBookingConfirmation = async (bookingDetails) => {
-  if (!transporter) {
-    console.log('Email disabled in production');
-    return;
-  }
   
   const { customer_name, customer_email, tour_title, booking_date, number_of_people, total_price } = bookingDetails;
 
@@ -58,10 +48,6 @@ const sendBookingConfirmation = async (bookingDetails) => {
 };
 
 const sendAdminNotification = async (bookingDetails) => {
-  if (!transporter) {
-    console.log('Email disabled in production');
-    return;
-  }
   
   const { customer_name, customer_email, customer_phone, tour_title, booking_date, number_of_people, total_price, special_requests } = bookingDetails;
 
