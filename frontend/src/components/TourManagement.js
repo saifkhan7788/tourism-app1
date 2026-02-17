@@ -20,12 +20,31 @@ const TourManagement = () => {
     description: '',
     price: '',
     price_usd: '',
+    original_price: '',
+    original_price_usd: '',
+    discount_percentage: 0,
     duration: '',
     category: '',
     image_url: '',
-    getyourguide_url: '',
+    gallery_images: [],
     highlights: '',
     includes: '',
+    free_cancellation: true,
+    cancellation_hours: 24,
+    reserve_now_pay_later: true,
+    min_participants: 1,
+    max_participants: 50,
+    adult_age_min: 12,
+    adult_age_max: 99,
+    child_age_min: 3,
+    child_age_max: 11,
+    infant_age_max: 2,
+    languages: '',
+    pickup_included: true,
+    pickup_details: 'Pickup from any location in Doha City',
+    private_group_available: true,
+    transport_rating: 92,
+    starting_times: '',
   });
   const [message, setMessage] = useState({ type: '', text: '' });
   const [uploading, setUploading] = useState(false);
@@ -62,10 +81,31 @@ const TourManagement = () => {
       setEditMode(true);
       const highlights = typeof tour.highlights === 'string' ? tour.highlights : JSON.stringify(tour.highlights, null, 2);
       const includes = typeof tour.includes === 'string' ? tour.includes : JSON.stringify(tour.includes, null, 2);
+      const languages = typeof tour.languages === 'string' ? tour.languages : JSON.stringify(tour.languages || ['English'], null, 2);
+      const starting_times = typeof tour.starting_times === 'string' ? tour.starting_times : JSON.stringify(tour.starting_times || ['09:00', '14:00', '18:00'], null, 2);
+      const gallery_images = typeof tour.gallery_images === 'string' ? JSON.parse(tour.gallery_images) : (tour.gallery_images || []);
       setCurrentTour({
         ...tour,
         highlights,
         includes,
+        languages,
+        starting_times,
+        gallery_images,
+        original_price: tour.original_price || '',
+        original_price_usd: tour.original_price_usd || '',
+        discount_percentage: tour.discount_percentage || 0,
+        free_cancellation: tour.free_cancellation !== false,
+        cancellation_hours: tour.cancellation_hours || 24,
+        reserve_now_pay_later: tour.reserve_now_pay_later !== false,
+        pickup_included: tour.pickup_included !== false,
+        pickup_details: tour.pickup_details || 'Pickup from any location in Doha City',
+        private_group_available: tour.private_group_available !== false,
+        transport_rating: tour.transport_rating || 92,
+        adult_age_min: tour.adult_age_min || 12,
+        adult_age_max: tour.adult_age_max || 99,
+        child_age_min: tour.child_age_min || 3,
+        child_age_max: tour.child_age_max || 11,
+        infant_age_max: tour.infant_age_max || 2,
       });
     } else {
       setEditMode(false);
@@ -75,12 +115,31 @@ const TourManagement = () => {
         description: '',
         price: '',
         price_usd: '',
+        original_price: '',
+        original_price_usd: '',
+        discount_percentage: 0,
         duration: '',
         category: '',
         image_url: '',
-        getyourguide_url: '',
+        gallery_images: [],
         highlights: '[]',
         includes: '[]',
+        free_cancellation: true,
+        cancellation_hours: 24,
+        reserve_now_pay_later: true,
+        min_participants: 1,
+        max_participants: 50,
+        languages: '["English"]',
+        pickup_included: true,
+        pickup_details: 'Pickup from any location in Doha City',
+        private_group_available: true,
+        transport_rating: 92,
+        starting_times: '["09:00", "14:00", "18:00"]',
+        adult_age_min: 12,
+        adult_age_max: 99,
+        child_age_min: 3,
+        child_age_max: 11,
+        infant_age_max: 2,
       });
     }
     setOpen(true);
@@ -116,12 +175,43 @@ const TourManagement = () => {
     }
   };
 
+  const handleGalleryUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+
+    setUploading(true);
+    try {
+      const uploadedUrls = [];
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('image', file);
+        const response = await axios.post(`${process.env.REACT_APP_API_URL || 'https://tourism-app1-production.up.railway.app/api'}/upload/image`, formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        uploadedUrls.push(response.data.imageUrl);
+      }
+      setCurrentTour({ ...currentTour, gallery_images: [...currentTour.gallery_images, ...uploadedUrls] });
+      setMessage({ type: 'success', text: `${uploadedUrls.length} images uploaded!` });
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Gallery upload failed!' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeGalleryImage = (index) => {
+    const newGallery = currentTour.gallery_images.filter((_, i) => i !== index);
+    setCurrentTour({ ...currentTour, gallery_images: newGallery });
+  };
+
   const handleSubmit = async () => {
     try {
       const tourData = {
         ...currentTour,
         highlights: JSON.parse(currentTour.highlights),
         includes: JSON.parse(currentTour.includes),
+        languages: JSON.parse(currentTour.languages),
+        starting_times: JSON.parse(currentTour.starting_times),
       };
 
       if (editMode) {
@@ -232,11 +322,38 @@ const TourManagement = () => {
           <TextField fullWidth label="Title" name="title" value={currentTour.title} onChange={handleChange} sx={{ mb: 2, mt: 1 }} />
           <TextField fullWidth label="Description" name="description" value={currentTour.description} onChange={handleChange} multiline rows={3} sx={{ mb: 2 }} />
           <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-            <TextField fullWidth label="Price (QAR)" name="price" type="number" value={currentTour.price} onChange={handleChange} />
-            <TextField fullWidth label="Price (USD)" name="price_usd" type="number" value={currentTour.price_usd || ''} onChange={handleChange} placeholder="Optional" />
+            <TextField fullWidth label="Price (QAR)" name="price" type="number" value={currentTour.price} onChange={handleChange} InputProps={{ startAdornment: <InputAdornment position="start">QAR</InputAdornment> }} />
+            <TextField fullWidth label="Price (USD)" name="price_usd" type="number" value={currentTour.price_usd} onChange={handleChange} InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} />
           </Box>
-          <TextField fullWidth label="Duration" name="duration" value={currentTour.duration} onChange={handleChange} sx={{ mb: 2 }} />
-          <TextField fullWidth label="Category" name="category" value={currentTour.category} onChange={handleChange} sx={{ mb: 2 }} />
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField fullWidth label="Original Price (QAR)" name="original_price" type="number" value={currentTour.original_price} onChange={handleChange} InputProps={{ startAdornment: <InputAdornment position="start">QAR</InputAdornment> }} />
+            <TextField fullWidth label="Original Price (USD)" name="original_price_usd" type="number" value={currentTour.original_price_usd} onChange={handleChange} InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField fullWidth label="Discount %" name="discount_percentage" type="number" value={currentTour.discount_percentage} onChange={handleChange} InputProps={{ endAdornment: <InputAdornment position="end">%</InputAdornment> }} />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField fullWidth label="Duration" name="duration" value={currentTour.duration} onChange={handleChange} />
+            <TextField fullWidth label="Category" name="category" value={currentTour.category} onChange={handleChange} />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField fullWidth label="Min Participants" name="min_participants" type="number" value={currentTour.min_participants} onChange={handleChange} />
+            <TextField fullWidth label="Max Participants" name="max_participants" type="number" value={currentTour.max_participants} onChange={handleChange} />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField fullWidth label="Cancellation Hours" name="cancellation_hours" type="number" value={currentTour.cancellation_hours} onChange={handleChange} />
+            <TextField fullWidth label="Transport Rating" name="transport_rating" type="number" value={currentTour.transport_rating} onChange={handleChange} />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField fullWidth label="Adult Age Min" name="adult_age_min" type="number" value={currentTour.adult_age_min} onChange={handleChange} />
+            <TextField fullWidth label="Adult Age Max" name="adult_age_max" type="number" value={currentTour.adult_age_max} onChange={handleChange} />
+          </Box>
+          <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+            <TextField fullWidth label="Child Age Min" name="child_age_min" type="number" value={currentTour.child_age_min} onChange={handleChange} />
+            <TextField fullWidth label="Child Age Max" name="child_age_max" type="number" value={currentTour.child_age_max} onChange={handleChange} />
+            <TextField fullWidth label="Infant Age Max" name="infant_age_max" type="number" value={currentTour.infant_age_max} onChange={handleChange} />
+          </Box>
+          <TextField fullWidth label="Pickup Details" name="pickup_details" value={currentTour.pickup_details} onChange={handleChange} sx={{ mb: 2 }} />
           
           <Box sx={{ mb: 2 }}>
             <Button
@@ -256,7 +373,27 @@ const TourManagement = () => {
           </Box>
           
           <TextField fullWidth label="Image URL (or upload above)" name="image_url" value={currentTour.image_url} onChange={handleChange} sx={{ mb: 2 }} />
-          <TextField fullWidth label="GetYourGuide URL (optional)" name="getyourguide_url" value={currentTour.getyourguide_url || ''} onChange={handleChange} sx={{ mb: 2 }} placeholder="https://www.getyourguide.com/..." />
+          
+          <Box sx={{ mb: 2 }}>
+            <Button component="label" variant="outlined" startIcon={<CloudUpload />} disabled={uploading}>
+              {uploading ? 'Uploading...' : 'Upload Gallery (Multiple)'}
+              <input type="file" hidden accept="image/*" multiple onChange={handleGalleryUpload} />
+            </Button>
+            {currentTour.gallery_images && currentTour.gallery_images.length > 0 && (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
+                {currentTour.gallery_images.map((img, index) => (
+                  <Box key={index} sx={{ position: 'relative' }}>
+                    <img src={`${process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://tourism-app1-production.up.railway.app'}${img}`} alt={`Gallery ${index + 1}`} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px' }} />
+                    <IconButton size="small" sx={{ position: 'absolute', top: -8, right: -8, bgcolor: 'error.main', color: 'white', '&:hover': { bgcolor: 'error.dark' } }} onClick={() => removeGalleryImage(index)}>
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Box>
+                ))}
+              </Box>
+            )}
+          </Box>
+          <TextField fullWidth label="Languages (JSON Array)" name="languages" value={currentTour.languages} onChange={handleChange} sx={{ mb: 2 }} placeholder='["English", "Arabic"]' />
+          <TextField fullWidth label="Starting Times (JSON Array)" name="starting_times" value={currentTour.starting_times} onChange={handleChange} sx={{ mb: 2 }} placeholder='["09:00", "14:00", "18:00"]' />
           <TextField fullWidth label="Highlights (JSON Array)" name="highlights" value={currentTour.highlights} onChange={handleChange} multiline rows={3} sx={{ mb: 2 }} />
           <TextField fullWidth label="Includes (JSON Array)" name="includes" value={currentTour.includes} onChange={handleChange} multiline rows={3} />
         </DialogContent>

@@ -8,11 +8,32 @@ CREATE TABLE tours (
   title VARCHAR(255) NOT NULL,
   description TEXT NOT NULL,
   price DECIMAL(10, 2) NOT NULL,
+  price_usd DECIMAL(10, 2),
+  original_price DECIMAL(10, 2),
+  original_price_usd DECIMAL(10, 2),
+  discount_percentage INT DEFAULT 0,
   duration VARCHAR(100) NOT NULL,
   highlights JSON,
   includes JSON,
   image_url VARCHAR(500),
+  gallery_images JSON,
   category VARCHAR(100),
+  free_cancellation BOOLEAN DEFAULT 1,
+  cancellation_hours INT DEFAULT 24,
+  reserve_now_pay_later BOOLEAN DEFAULT 1,
+  min_participants INT DEFAULT 1,
+  max_participants INT DEFAULT 50,
+  adult_age_min INT DEFAULT 12,
+  adult_age_max INT DEFAULT 99,
+  child_age_min INT DEFAULT 3,
+  child_age_max INT DEFAULT 11,
+  infant_age_max INT DEFAULT 2,
+  languages JSON,
+  pickup_included BOOLEAN DEFAULT 1,
+  pickup_details VARCHAR(500) DEFAULT 'Pickup from any location in Doha City',
+  private_group_available BOOLEAN DEFAULT 1,
+  transport_rating INT DEFAULT 92,
+  starting_times JSON,
   is_active BOOLEAN DEFAULT 1,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -28,6 +49,7 @@ CREATE TABLE bookings (
   customer_email VARCHAR(255) NOT NULL,
   customer_phone VARCHAR(50) NOT NULL,
   booking_date DATE NOT NULL,
+  booking_time VARCHAR(10),
   number_of_people INT NOT NULL,
   total_price DECIMAL(10, 2) NOT NULL,
   special_requests TEXT,
@@ -54,56 +76,81 @@ CREATE TABLE users (
 );
 
 -- Insert Sample Tours (5 Main Tours)
-INSERT INTO tours (title, description, price, duration, highlights, includes, image_url, category) VALUES
+INSERT INTO tours (title, description, price, original_price, discount_percentage, duration, highlights, includes, image_url, category, free_cancellation, cancellation_hours, reserve_now_pay_later) VALUES
 (
   'Desert Safari Adventure',
   'Experience the thrill of dune bashing in the golden sands of Qatar. Enjoy camel rides, sandboarding, and a traditional BBQ dinner under the stars with cultural entertainment.',
+  200.00,
   250.00,
+  20,
   '6 hours',
   '["Dune bashing in 4x4 vehicles", "Camel riding experience", "Sandboarding", "Traditional BBQ dinner", "Henna painting", "Falcon photography", "Sunset views"]',
   '["Hotel pickup and drop-off", "Professional driver/guide", "BBQ dinner and refreshments", "All activities", "Safety equipment"]',
   '/uploads/desert-safari.jpg',
-  'Adventure'
+  'Adventure',
+  1,
+  24,
+  1
 ),
 (
   'Jet Ski Water Sports',
   'Feel the adrenaline rush as you ride the waves on a powerful jet ski. Perfect for adventure seekers looking for an exciting water sports experience along Qatar beautiful coastline.',
+  144.00,
   180.00,
+  20,
   '1 hour',
   '["High-speed jet ski riding", "Professional instruction", "Safety briefing", "Scenic coastal views", "Photo opportunities"]',
   '["Jet ski rental", "Life jacket", "Safety equipment", "Professional instructor", "Insurance"]',
   '/uploads/jet-ski.jpg',
-  'Water Sports'
+  'Water Sports',
+  1,
+  24,
+  1
 ),
 (
   'Doha City Tour',
   'Discover the rich culture and modern marvels of Doha. Visit iconic landmarks including the Museum of Islamic Art, Souq Waqif, The Pearl, and Katara Cultural Village.',
+  120.00,
   150.00,
+  20,
   '4 hours',
   '["Museum of Islamic Art", "Souq Waqif traditional market", "The Pearl-Qatar", "Katara Cultural Village", "Corniche waterfront", "Photo stops at landmarks"]',
   '["Air-conditioned vehicle", "Professional tour guide", "Hotel pickup and drop-off", "Bottled water", "Entry fees"]',
   '/uploads/city-tour.jpg',
-  'Cultural'
+  'Cultural',
+  1,
+  24,
+  1
 ),
 (
   'Dhow Cruise Dinner',
   'Sail along Doha Bay on a traditional wooden dhow boat. Enjoy a delicious international buffet dinner while taking in the stunning views of Doha illuminated skyline.',
+  160.00,
   200.00,
+  20,
   '3 hours',
   '["Traditional dhow boat cruise", "International buffet dinner", "Live entertainment", "Stunning skyline views", "Welcome drinks", "Relaxing atmosphere"]',
   '["Dhow cruise", "International buffet dinner", "Welcome drinks", "Live entertainment", "Hotel pickup and drop-off"]',
   '/uploads/dhow-cruise.jpg',
-  'Cruise'
+  'Cruise',
+  1,
+  24,
+  1
 ),
 (
   'North of Qatar Tour',
   'Explore Qatar historical treasures in the north. Visit the UNESCO World Heritage Site of Al Zubarah Fort, ancient ruins, and enjoy the serene beaches and mangroves.',
+  176.00,
   220.00,
+  20,
   '5 hours',
   '["Al Zubarah Fort (UNESCO site)", "Archaeological ruins", "Purple Island mangroves", "Northern beaches", "Traditional villages", "Historical insights"]',
   '["Air-conditioned 4x4 vehicle", "Professional guide", "Hotel pickup and drop-off", "Bottled water and snacks", "Entry fees"]',
   '/uploads/north-qatar.jpg',
-  'Historical'
+  'Historical',
+  1,
+  24,
+  1
 );
 
 -- Insert Default Admin User (password: admin123)

@@ -2,11 +2,11 @@ import db from '../config/database.js';
 
 class Booking {
   static async create(bookingData) {
-    const { tour_id, customer_name, customer_email, customer_phone, booking_date, number_of_people, total_price, total_price_usd, special_requests } = bookingData;
+    const { tour_id, customer_name, customer_email, customer_phone, booking_date, booking_time, number_of_people, total_price, total_price_usd, special_requests } = bookingData;
     const [result] = await db.query(
-      `INSERT INTO bookings (tour_id, customer_name, customer_email, customer_phone, booking_date, number_of_people, total_price, total_price_usd, special_requests) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [tour_id, customer_name, customer_email, customer_phone, booking_date, number_of_people, total_price, total_price_usd || null, special_requests]
+      `INSERT INTO bookings (tour_id, customer_name, customer_email, customer_phone, booking_date, booking_time, number_of_people, total_price, total_price_usd, special_requests) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [tour_id, customer_name, customer_email, customer_phone, booking_date, booking_time || null, number_of_people, total_price, total_price_usd || null, special_requests]
     );
     return result.insertId;
   }

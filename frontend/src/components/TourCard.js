@@ -59,17 +59,31 @@ const TourCard = ({ tour }) => {
                 {tour.duration}
               </Typography>
             </Box>
-            <Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                <AttachMoney fontSize="small" color="primary" />
-                <Typography variant="h6" color="primary" fontWeight={700}>
-                  {tour.price} QAR
-                </Typography>
-              </Box>
-              {tour.price_usd && parseFloat(tour.price_usd) > 0 && (
-                <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right', display: 'block' }}>
-                  ≈ ${parseFloat(tour.price_usd).toFixed(0)} USD
-                </Typography>
+            <Box sx={{ textAlign: 'right' }}>
+              {tour.original_price && tour.discount_percentage > 0 ? (
+                <>
+                  <Typography variant="caption" sx={{ textDecoration: 'line-through', color: 'text.secondary', display: 'block' }}>
+                    ${tour.original_price}
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="h6" color="primary" fontWeight={700}>
+                      ${tour.price}
+                    </Typography>
+                    <Chip label={`-${tour.discount_percentage}%`} size="small" color="error" sx={{ fontWeight: 600 }} />
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    per person
+                  </Typography>
+                </>
+              ) : (
+                <>
+                  <Typography variant="h6" color="primary" fontWeight={700}>
+                    ${tour.price}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    per person
+                  </Typography>
+                </>
               )}
             </Box>
           </Box>
