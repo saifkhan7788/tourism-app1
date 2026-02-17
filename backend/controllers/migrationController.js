@@ -13,6 +13,13 @@ export const runMigration = async (req, res) => {
     await db.query(`UPDATE tours SET original_price = price WHERE original_price IS NULL`);
     await db.query(`UPDATE tours SET discount_percentage = 0 WHERE discount_percentage IS NULL`);
     
+    await db.query(`
+      INSERT INTO settings (setting_key, setting_value) VALUES
+      ('auto_approve_enabled', 'true'),
+      ('auto_approve_minutes', '2')
+      ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)
+    `);
+    
     res.json({ success: true, message: 'Migration completed successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

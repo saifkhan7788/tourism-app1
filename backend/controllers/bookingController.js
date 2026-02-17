@@ -1,5 +1,6 @@
 import Booking from '../models/Booking.js';
 import Tour from '../models/Tour.js';
+import Settings from '../models/Settings.js';
 import { sendBookingConfirmation, sendAdminNotification, sendStatusUpdateEmail } from '../utils/emailService.js';
 
 const createBooking = async (req, res) => {
@@ -8,6 +9,34 @@ const createBooking = async (req, res) => {
     
     // Send response immediately
     res.status(201).json({ success: true, message: 'Booking created successfully', bookingId });
+    
+    // Get auto-approval settings
+    Settings.getAll().then(settings => {
+      const autoApproveEnabled = settings.auto_approve_enabled === 'true';
+      const autoApproveMinutes = parseInt(settings.auto_approve_minutes || '2');
+      
+      if (autoApproveEnabled) {
+        setTimeout(async () => {
+          try {
+            const booking = await Booking.getById(bookingId);
+            if (booking && booking.status === 'pending') {
+              await Booking.updateStatus(bookingId, 'confirmed');
+              const tour = await Tour.getById(booking.tour_id);
+              sendStatusUpdateEmail({
+                customer_name: booking.customer_name,
+                customer_email: booking.customer_email,
+                tour_title: tour.title,
+                booking_date: booking.booking_date,
+                number_of_people: booking.number_of_people,
+                total_price: booking.total_price
+              }, 'confirmed', 'Your booking has been automatically confirmed.').catch(err => console.error('Email error:', err));
+            }
+          } catch (err) {
+            console.error('Auto-confirm error:', err);
+          }
+        }, autoApproveMinutes * 60 * 1000);
+      }
+    }).catch(err => console.error('Settings error:', err));
     
     // Send emails asynchronously (don't block response)
     Tour.getById(req.body.tour_id).then(tour => {

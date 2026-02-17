@@ -216,4 +216,6 @@ INSERT INTO settings (setting_key, setting_value) VALUES
 ('whatsapp_number', '97477807165'),
 ('company_phone', '+974 7780 7165'),
 ('company_email', 'info@arabianadventure.com'),
-('company_address', 'Doha, Qatar');
+('company_address', 'Doha, Qatar'),
+('auto_approve_enabled', 'true'),
+('auto_approve_minutes', '2');
