@@ -20,6 +20,8 @@ export const runMigration = async (req, res) => {
       ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)
     `);
     
+    await db.query(`CREATE INDEX IF NOT EXISTS idx_tour_date ON bookings(tour_id, booking_date)`);
+    
     res.json({ success: true, message: 'Migration completed successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
