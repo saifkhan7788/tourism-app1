@@ -5,6 +5,19 @@ import { sendBookingConfirmation, sendAdminNotification, sendStatusUpdateEmail }
 
 const createBooking = async (req, res) => {
   try {
+    // Check availability first
+    const tour = await Tour.getById(req.body.tour_id);
+    const bookedCount = await Booking.checkAvailability(req.body.tour_id, req.body.booking_date);
+    const maxCapacity = tour.max_participants || 50;
+    const requestedPeople = req.body.number_of_people;
+    
+    if (bookedCount + requestedPeople > maxCapacity) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Only ${maxCapacity - bookedCount} spots available for this date` 
+      });
+    }
+    
     const bookingId = await Booking.create(req.body);
     
     // Send response immediately
@@ -29,7 +42,7 @@ const createBooking = async (req, res) => {
                 booking_date: booking.booking_date,
                 number_of_people: booking.number_of_people,
                 total_price: booking.total_price
-              }, 'confirmed', 'Your booking has been automatically confirmed.').catch(err => console.error('Email error:', err));
+              }, 'confirmed').catch(err => console.error('Email error:', err));
             }
           } catch (err) {
             console.error('Auto-confirm error:', err);
@@ -140,5 +153,29 @@ const deleteBooking = async (req, res) => {
   }
 };
 
+const checkAvailability = async (req, res) => {
+  try {
+    const { tourId, date } = req.query;
+    const tour = await Tour.getById(tourId);
+    if (!tour) {
+      return res.status(404).json({ success: false, message: 'Tour not found' });
+    }
+    
+    const bookedCount = await Booking.checkAvailability(tourId, date);
+    const maxCapacity = tour.max_participants || 50;
+    const availableSpots = maxCapacity - bookedCount;
+    
+    res.json({ 
+      success: true, 
+      available: availableSpots > 0,
+      availableSpots,
+      maxCapacity,
+      bookedCount
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
 
-export default { createBooking, getAllBookings, getBookingById, updateBookingStatus, getBookingsByEmail, deleteBooking };
+
+export default { createBooking, getAllBookings, getBookingById, updateBookingStatus, getBookingsByEmail, deleteBooking, checkAvailability };

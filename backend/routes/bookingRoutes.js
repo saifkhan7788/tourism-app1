@@ -8,6 +8,7 @@ const router = express.Router();
 // Public routes
 router.post('/', bookingController.createBooking);
 router.get('/email/:email', bookingController.getBookingsByEmail);
+router.get('/check-availability', bookingController.checkAvailability);
 
 // Protected routes (Admin and Manager)
 router.get('/', authMiddleware, checkRole('admin', 'manager'), bookingController.getAllBookings);

@@ -60,7 +60,8 @@ CREATE TABLE bookings (
   INDEX idx_tour (tour_id),
   INDEX idx_email (customer_email),
   INDEX idx_status (status),
-  INDEX idx_date (booking_date)
+  INDEX idx_date (booking_date),
+  INDEX idx_tour_date (tour_id, booking_date)
 );
 
 -- Users Table (Admin)

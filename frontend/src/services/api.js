@@ -36,6 +36,7 @@ export const bookingAPI = {
   updateStatus: (id, status, remarks) => api.patch(`/bookings/${id}/status`, { status, remarks }),
   getByEmail: (email) => api.get(`/bookings/email/${email}`),
   delete: (id) => api.delete(`/bookings/${id}`),
+  checkAvailability: (tourId, date) => api.get('/bookings/check-availability', { params: { tourId, date } }),
 };
 
 // Auth API

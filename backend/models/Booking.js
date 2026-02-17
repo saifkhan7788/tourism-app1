@@ -80,6 +80,15 @@ class Booking {
     const [result] = await db.query('DELETE FROM bookings WHERE id = ?', [id]);
     return result.affectedRows;
   }
-}
 
+  static async checkAvailability(tourId, bookingDate) {
+    const [rows] = await db.query(
+      `SELECT SUM(number_of_people) as booked_count 
+       FROM bookings 
+       WHERE tour_id = ? AND booking_date = ? AND status IN ('pending', 'confirmed')`,
+      [tourId, bookingDate]
+    );
+    return rows[0].booked_count || 0;
+  }
+}
 export default Booking;

@@ -24,6 +24,9 @@ const TourDetail = () => {
   const [showTimeSlots, setShowTimeSlots] = useState(false);
   const [openGallery, setOpenGallery] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [checkingAvailability, setCheckingAvailability] = useState(false);
+  const [availabilityChecked, setAvailabilityChecked] = useState(false);
+  const [availabilityData, setAvailabilityData] = useState(null);
 
   useEffect(() => {
     fetchTour();
@@ -44,9 +47,28 @@ const TourDetail = () => {
     const { name, value } = e.target;
     setBookingData({ ...bookingData, [name]: value });
     
-    // Show time slots when date is selected
-    if (name === 'booking_date' && value) {
-      setShowTimeSlots(true);
+    if (name === 'booking_date') {
+      setAvailabilityChecked(false);
+      setShowTimeSlots(false);
+    }
+  };
+
+  const handleCheckAvailability = async () => {
+    setCheckingAvailability(true);
+    setBookingError('');
+    try {
+      const response = await bookingAPI.checkAvailability(tour.id, bookingData.booking_date);
+      setAvailabilityData(response.data);
+      setAvailabilityChecked(true);
+      if (response.data.available) {
+        setShowTimeSlots(true);
+      } else {
+        setBookingError('No availability for this date. Please select another date.');
+      }
+    } catch (error) {
+      setBookingError('Failed to check availability. Please try again.');
+    } finally {
+      setCheckingAvailability(false);
     }
   };
 
@@ -419,6 +441,24 @@ const TourDetail = () => {
                     sx={{ mb: 2 }}
                     size="small"
                   />
+                  
+                  {bookingData.booking_date && !availabilityChecked && (
+                    <Button
+                      fullWidth
+                      variant="outlined"
+                      onClick={handleCheckAvailability}
+                      disabled={checkingAvailability}
+                      sx={{ mb: 2, borderColor: '#8B1538', color: '#8B1538', '&:hover': { borderColor: '#6B0F28', bgcolor: '#fff5f5' } }}
+                    >
+                      {checkingAvailability ? 'Checking...' : 'Check Availability'}
+                    </Button>
+                  )}
+                  
+                  {availabilityChecked && availabilityData?.available && (
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                      Available! {availabilityData.availableSpots} spots remaining.
+                    </Alert>
+                  )}
                   
                   {/* Time Slots */}
                   {showTimeSlots && startingTimes.length > 0 && (
