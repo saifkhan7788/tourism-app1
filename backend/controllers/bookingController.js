@@ -6,21 +6,21 @@ const createBooking = async (req, res) => {
   try {
     const bookingId = await Booking.create(req.body);
     
-    // Get tour details for email
-    const tour = await Tour.getById(req.body.tour_id);
+    // Send response immediately
+    res.status(201).json({ success: true, message: 'Booking created successfully', bookingId });
     
-    // Send emails
-    try {
-      await sendBookingConfirmation({
+    // Send emails asynchronously (don't block response)
+    Tour.getById(req.body.tour_id).then(tour => {
+      sendBookingConfirmation({
         customer_name: req.body.customer_name,
         customer_email: req.body.customer_email,
         tour_title: tour.title,
         booking_date: req.body.booking_date,
         number_of_people: req.body.number_of_people,
         total_price: req.body.total_price
-      });
+      }).catch(err => console.error('Email error:', err));
       
-      await sendAdminNotification({
+      sendAdminNotification({
         customer_name: req.body.customer_name,
         customer_email: req.body.customer_email,
         customer_phone: req.body.customer_phone,
@@ -29,12 +29,9 @@ const createBooking = async (req, res) => {
         number_of_people: req.body.number_of_people,
         total_price: req.body.total_price,
         special_requests: req.body.special_requests
-      });
-    } catch (emailError) {
-      console.error('Email sending failed:', emailError);
-    }
+      }).catch(err => console.error('Email error:', err));
+    }).catch(err => console.error('Tour fetch error:', err));
     
-    res.status(201).json({ success: true, message: 'Booking created successfully', bookingId });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
@@ -73,25 +70,21 @@ const updateBookingStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
     
-    // Get booking and tour details for email
-    const booking = await Booking.getById(req.params.id);
-    const tour = await Tour.getById(booking.tour_id);
+    res.json({ success: true, message: 'Booking status updated successfully' });
     
-    // Send status update email
-    try {
-      await sendStatusUpdateEmail({
+    // Send email asynchronously
+    Booking.getById(req.params.id).then(booking => {
+      return Tour.getById(booking.tour_id).then(tour => ({ booking, tour }));
+    }).then(({ booking, tour }) => {
+      sendStatusUpdateEmail({
         customer_name: booking.customer_name,
         customer_email: booking.customer_email,
         tour_title: tour.title,
         booking_date: booking.booking_date,
         number_of_people: booking.number_of_people,
         total_price: booking.total_price
-      }, status, remarks);
-    } catch (emailError) {
-      console.error('Email sending failed:', emailError);
-    }
-    
-    res.json({ success: true, message: 'Booking status updated successfully' });
+      }, status, remarks).catch(err => console.error('Email error:', err));
+    }).catch(err => console.error('Fetch error:', err));
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
